@@ -15,7 +15,7 @@
 
   .SubContainer {
     height: fit-content;
-    width: 1000px;
+    width: 1100px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     border-radius:  0 0 10px 10px;
     margin: 10px 0 20px 0;
@@ -44,7 +44,7 @@
             @extend .flexCenter;
             font-size: 22px;
             font-weight: 600;
-            margin: 0 0 50px 0;
+            margin: 0 0 40px 0;
           }
 
           .sub-flex-Container {
@@ -95,27 +95,32 @@
         margin: 5px 0 0 0;
 
         .UserId {
-          flex: 3;
+          flex: 2;
           @extend .flexCenter;
         }
 
-        .UserName, .EmailID {
-          flex: 15;
+        .UserName {
+          flex: 8;
           @extend .flexCenter;
         }
 
-        .MobileNumber{
+        .EmailID {
           flex: 10;
           @extend .flexCenter;
         }
 
+        .MobileNumber{
+          flex: 4;
+          @extend .flexCenter;
+        }
+
         .Salary, .Gender{
-          flex: 5;
+          flex: 4;
           @extend .flexCenter;
         }
 
         .Age {
-          flex: 3;
+          flex: 2;
           @extend .flexCenter;
         }
 

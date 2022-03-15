@@ -124,7 +124,7 @@ export default class HomePage extends Component {
           <div className="Box1">
             <div className="Input-Container">
               <div className="flex-Container">
-                <div className='Header'>Excel & Csv Bulk Data Upload</div>
+                <div className="Header">Excel & Csv Bulk Data Upload</div>
                 <div className="sub-flex-Container">
                   <div className="FileName">
                     {state.File !== null ? state.File.name : ''}
@@ -158,35 +158,43 @@ export default class HomePage extends Component {
             </div>
           </div>
           <div className="Box2">
+            <div className="data-flex" style={{color:"red"}}>
+              <div className="UserId" >UserId</div>
+              <div className="UserName">UserName</div>
+              <div className="EmailID">EmailID</div>
+              <div className="MobileNumber">MobileNo.</div>
+              <div className="Salary">Salary</div>
+              <div className="Gender">Gender</div>
+              <div className="Age">Age</div>
+              <div className="Delete"></div>
+            </div>
             {Array.isArray(this.state.DataRecord) &&
-            this.state.DataRecord.length > 0 ? (
-              this.state.DataRecord.map(function (data, index) {
-                return (
-                  <div key={index} className="data-flex">
-                    <div className="UserId">{data.userId}</div>
-                    <div className="UserName">{data.userName}</div>
-                    <div className="EmailID">{data.emailID}</div>
-                    <div className="MobileNumber">{data.mobileNumber}</div>
-                    <div className="Salary">{data.salary}</div>
-                    <div className="Gender">{data.gender}</div>
-                    <div className="Age">{data.age}</div>
-                    <div className="Delete">
-                      <Button
-                        variant="outlined"
-                        // color="primary"
-                        onClick={() => {
-                          Self.handleDelete(data)
-                        }}
-                      >
-                        <DeleteIcon />
-                      </Button>
+            this.state.DataRecord.length > 0
+              ? this.state.DataRecord.map(function (data, index) {
+                  return (
+                    <div key={index} className="data-flex">
+                      <div className="UserId">{data.userId}</div>
+                      <div className="UserName">{data.userName}</div>
+                      <div className="EmailID">{data.emailID}</div>
+                      <div className="MobileNumber">{data.mobileNumber}</div>
+                      <div className="Salary">{data.salary}</div>
+                      <div className="Gender">{data.gender}</div>
+                      <div className="Age">{data.age}</div>
+                      <div className="Delete">
+                        <Button
+                          variant="outlined"
+                          // color="primary"
+                          onClick={() => {
+                            Self.handleDelete(data)
+                          }}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )
-              })
-            ) : (
-              <div></div>
-            )}
+                  )
+                })
+              : null}
           </div>
         </div>
         <Pagination
