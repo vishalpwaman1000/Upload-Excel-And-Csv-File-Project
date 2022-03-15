@@ -9,14 +9,16 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   background-color: #4990e7;
+  flex-direction: column;
 
   .SubContainer {
     height: fit-content;
     width: 1000px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    //margin: 50px auto;
-    margin: 50px 0 0 0;
+    border-radius:  0 0 10px 10px;
+    margin: 10px 0 20px 0;
 
     .Box1 {
       width: 100%;
@@ -25,6 +27,7 @@
       box-sizing: border-box;
       background-color: white;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
       @extend .flexCenter;
 
       .Input-Container {
@@ -37,8 +40,16 @@
           width: 80%;
           margin: 5px;
 
+          .Header{
+            @extend .flexCenter;
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0 0 50px 0;
+          }
+
           .sub-flex-Container {
             display: flex;
+            margin: 0 0 10px 0;
 
             .FileName {
               display: flex;
@@ -84,7 +95,7 @@
         margin: 5px 0 0 0;
 
         .UserId {
-          flex: 5;
+          flex: 3;
           @extend .flexCenter;
         }
 
@@ -104,10 +115,20 @@
         }
 
         .Age {
-          flex: 5;
+          flex: 3;
           @extend .flexCenter;
         }
+
+        .Delete{
+          flex: 2;
+          margin: 6px 5px;
+      }
       }
     }
   }
+  
+  .MuiPaginationItem-outlinedSecondary.Mui-selected {
+    background-color: white;
+  }
+
 }

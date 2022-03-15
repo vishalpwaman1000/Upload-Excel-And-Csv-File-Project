@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
 import './HomePage.scss'
 import CrudServices from '../Services/CrudServices'
+import ReactFileReader from 'react-file-reader'
+import Pagination from '@material-ui/lab/Pagination'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const service = new CrudServices()
 
@@ -16,20 +16,33 @@ export default class HomePage extends Component {
       UploadFile: false,
       FileExtension: '',
       DataRecord: [],
+      RecordPerPage: 4,
+      PageNumber: 1,
+      currentPage: 1,
+      totalRecords: 0,
+      totalPages: 0,
     }
   }
 
   componentWillMount() {
     console.log('Component Will Mount Calling')
-    this.ReadRecord()
+    this.ReadRecord(this.state.PageNumber)
   }
 
-  ReadRecord() {
+  ReadRecord(CurrentPage) {
+    let data = {
+      recordPerPage: this.state.RecordPerPage,
+      pageNumber: CurrentPage,
+    }
+
+    console.log('Record Request Body : ', data)
+
     service
-      .ReadRecord()
+      .ReadRecord(data)
       .then((data) => {
         console.log(data.data.readRecord)
-        console.log(data.data.readRecordData)
+        this.setState({ totalRecords: data.data.totalRecords })
+        this.setState({ totalPages: data.data.totalPages })
         this.setState({ DataRecord: data.data.readRecord })
       })
       .catch((error) => {
@@ -37,62 +50,33 @@ export default class HomePage extends Component {
       })
   }
 
-  changeHandler = (event) => {
-    console.log("Event : ", event.target.files[0]);
-    this.setState({ File: event.target.files[0] })
-    this.setState({ UploadFile: true })
-    this.setState({
-      FileExtension: event.target.files[0].name.split('.').pop(),
-    })
-  }
-
-  InsertCsvRecord(fName) {
-    console.log("inside DataService:", fName);
-    let fdata = new FormData();
-    fdata.append("File", fName);
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "cache-control": "no-cache"
-      },
-      credentials: "include",
-      body: fdata
-    };
-    return fetch(
-      baseURL + "/api/ProgramSettings/InsertStoreTags",
-      requestOptions
-    )
-      .then(res => res.json())
-      .then(result => {
-        console.log(result, "result");
-        return result;
-      });
-  }
-
-  handleClick = () => {
+  handleClick = (event) => {
+    event.preventDefault()
     if (this.state.FileExtension !== '') {
-      let fdata = new FormData();
-      const data = {
-        file: fdata.append("file",this.state.File),
-      }
+      const data = new FormData()
+      data.append('file', this.state.File)
 
       if (this.state.FileExtension.toLowerCase() === 'csv') {
         service
           .InsertCsvRecord(data)
           .then((data) => {
             console.log(data)
+            this.ReadRecord(this.state.PageNumber)
           })
           .catch((error) => {
             console.log(error)
+            this.ReadRecord(this.state.PageNumber)
           })
       } else if (this.state.FileExtension.toLowerCase() === 'xlsx') {
         service
           .InsertExcelRecord(data)
           .then((data) => {
             console.log(data)
+            this.ReadRecord(this.state.PageNumber)
           })
           .catch((error) => {
             console.log(error)
+            this.ReadRecord(this.state.PageNumber)
           })
       } else {
         console.log('Invalid File')
@@ -100,7 +84,38 @@ export default class HomePage extends Component {
     }
   }
 
+  handleFiles = (files) => {
+    var reader = new FileReader()
+    reader.readAsText(files[0])
+    this.setState({ File: files[0] })
+    this.setState({ UploadFile: true })
+    this.setState({
+      FileExtension: files[0].name.split('.').pop(),
+    })
+  }
+
+  handlePaging = (event, value) => {
+    this.setState({ PageNumber: value })
+    console.log('value : ', value)
+    this.ReadRecord(value)
+  }
+
+  handleDelete = (datas) => {
+    console.log('Delete Body Id: ', datas.userId)
+    service
+      .DeleteRecord(datas.userId)
+      .then((data) => {
+        console.log(data)
+        this.ReadRecord(this.state.PageNumber)
+      })
+      .catch((error) => {
+        console.log(error)
+        this.ReadRecord(this.state.PageNumber)
+      })
+  }
+
   render() {
+    //console.log('State : ', this.state)
     let state = this.state
     let Self = this
     return (
@@ -109,17 +124,17 @@ export default class HomePage extends Component {
           <div className="Box1">
             <div className="Input-Container">
               <div className="flex-Container">
+                <div className='Header'>Excel & Csv Bulk Data Upload</div>
                 <div className="sub-flex-Container">
-                  <div className="FileName">{state.File.name}</div>
+                  <div className="FileName">
+                    {state.File !== null ? state.File.name : ''}
+                  </div>
                   <div className="UploadButton">
-                    <input
-                      accept=".xlsx, .csv"
+                    <ReactFileReader
+                      handleFiles={this.handleFiles}
+                      fileTypes={'.xlsx, .csv'}
                       className="Upload"
-                      id="contained-button-file"
-                      type="file"
-                      onChange={this.changeHandler}
-                    />
-                    <label htmlFor="contained-button-file">
+                    >
                       <Button
                         variant="contained"
                         color="primary"
@@ -127,7 +142,7 @@ export default class HomePage extends Component {
                       >
                         Upload
                       </Button>
-                    </label>
+                    </ReactFileReader>
                   </div>
                 </div>
               </div>
@@ -155,6 +170,17 @@ export default class HomePage extends Component {
                     <div className="Salary">{data.salary}</div>
                     <div className="Gender">{data.gender}</div>
                     <div className="Age">{data.age}</div>
+                    <div className="Delete">
+                      <Button
+                        variant="outlined"
+                        // color="primary"
+                        onClick={() => {
+                          Self.handleDelete(data)
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </div>
                   </div>
                 )
               })
@@ -163,6 +189,14 @@ export default class HomePage extends Component {
             )}
           </div>
         </div>
+        <Pagination
+          count={state.totalPages}
+          page={this.state.PageNumber}
+          onChange={this.handlePaging}
+          variant="outlined"
+          shape="rounded"
+          color="secondary"
+        />
       </div>
     )
   }

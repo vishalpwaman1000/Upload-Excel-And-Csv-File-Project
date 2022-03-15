@@ -6,25 +6,25 @@ const axios = new Axios()
 
 export default class CrudServices {
   InsertExcelRecord(data) {
-    console.log('data : ' + data + ' Url : ' + Configuration.InsertExcelRecord)
+    console.log('data : ', data, ' Url : ', Configuration.InsertExcelRecord)
     return axios.post(Configuration.InsertExcelRecord, data, false)
   }
 
   InsertCsvRecord(data) {
-    console.log('data : ' + data + ' Url : ' + Configuration.InsertCsvRecord)
+    console.log('data : ', data, ' Url : ', Configuration.InsertCsvRecord)
     return axios.post(Configuration.InsertCsvRecord, data, false)
   }
 
-  ReadRecord() {
-    console.log('Url : ', Configuration.GetRecord)
-    return axios.get(Configuration.GetRecord, false)
+  ReadRecord(data) {
+    console.log('Url : ', Configuration.GetRecord, 'Data : ', data)
+    return axios.post(Configuration.GetRecord, data, false)
   }
 
-  DeleteRecord(data) {
+  DeleteRecord(userId) {
     console.log('Url : ', Configuration.DeleteRecord)
     return axios.delete(
       Configuration.DeleteRecord,
-      { data: { id: data.id } },
+      { data: { userID: userId } },
       false,
     )
   }
