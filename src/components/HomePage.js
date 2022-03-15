@@ -140,7 +140,7 @@ export default class HomePage extends Component {
                         color="primary"
                         component="span"
                       >
-                        Upload
+                        Submit
                       </Button>
                     </ReactFileReader>
                   </div>
@@ -152,7 +152,7 @@ export default class HomePage extends Component {
                   color="secondary"
                   onClick={this.handleClick}
                 >
-                  Submit
+                  Upload
                 </Button>
               </div>
             </div>
